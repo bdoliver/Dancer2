@@ -31,6 +31,13 @@ has config => (
         my $self = shift;
         my $config = $self->app->config;
         my $package = ref $self; # TODO
+
+        # First check for a plugin config for the fully-qualified package name:
+        if ( exists $config->{plugins}{"+$package"} ) {
+            return $config->{plugins}{"+$package"} || {};
+        }
+
+        # ... fall back to the plugin 'short' name:
         $package =~ s/Dancer2::Plugin:://;
         $config->{plugins}{$package} || {};
     },
